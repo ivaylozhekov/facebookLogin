@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 declare var window: any;
 declare var FB: any;
 
@@ -10,7 +10,7 @@ declare var FB: any;
 export class LoginComponent implements OnInit {
   // 9665a7d7df4ff04658dbcb05d18e4839
   public status = '';
-  constructor() {
+  constructor(private cd: ChangeDetectorRef) {
       // This function initializes the FB variable
       (function(d, s, id) {
         let js;
@@ -60,7 +60,6 @@ export class LoginComponent implements OnInit {
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
       this.testAPI();
-      this.status = '';
     } else {
       FB.login(function(response){
         // Handle the response object, like in statusChangeCallback() in our demo
@@ -68,18 +67,21 @@ export class LoginComponent implements OnInit {
         debugger;
       });
       // The person is not logged into your app or we are unable to tell.
-      this.status = 'Please log ' +
-        'into this app.';
+      this.changeStatus('Please log into this app.');
     }
   }
 
   testAPI() {
     console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
+    FB.api('/me', (response) => {
       console.log('Successful login for: ' + response.name);
-      document.getElementById('status').innerHTML =
-        'Thanks for logging in, ' + response.name + '!';
+      this.changeStatus('Thanks for logging in, ' + response.name + '!');
     });
+  }
+
+  changeStatus(status) {
+    this.status = status;
+    this.cd.detectChanges();
   }
 
 }
