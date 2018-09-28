@@ -8,10 +8,9 @@ declare var FB: any;
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  // 9665a7d7df4ff04658dbcb05d18e4839
+  // secret: 9665a7d7df4ff04658dbcb05d18e4839
   public status = '';
   constructor(private cd: ChangeDetectorRef) {
-      // This function initializes the FB variable
       (function(d, s, id) {
         let js;
         const fjs = d.getElementsByTagName(s)[0];
@@ -34,14 +33,13 @@ export class LoginComponent implements OnInit {
             version          : 'v3.1'
         });
         FB.AppEvents.logPageView();
-        // This is where we do most of our code dealing with the FB variable like adding an observer to check when the user signs in
     };
   }
 
   ngOnInit() {
-    // if (window.FB) {
-    //   window.FB.XFBML.parse();
-    // }
+    if (window.FB) {
+      window.FB.XFBML.parse();
+    }
   }
 
   checkLoginState() {
@@ -53,22 +51,16 @@ export class LoginComponent implements OnInit {
   statusChangeCallback(response) {
     console.log('statusChangeCallback');
     console.log(response);
-    // The response object is returned with a status field that lets the
-    // app know the current login status of the person.
-    // Full docs on the response object can be found in the documentation
-    // for FB.getLoginStatus().
     if (response.status === 'connected') {
-      // Logged into your app and Facebook.
       this.testAPI();
     } else {
-      FB.login(function(response){
-        // Handle the response object, like in statusChangeCallback() in our demo
-        // code.
-        debugger;
-      });
-      // The person is not logged into your app or we are unable to tell.
+      FB.login(this.fbLogin);
       this.changeStatus('Please log into this app.');
     }
+  }
+
+  fbLogin = (response) => {
+    console.log(response);
   }
 
   testAPI() {
